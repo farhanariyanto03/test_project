@@ -71,12 +71,7 @@
     @php
         $authUser = auth()->user();
         $isAdmin = $authUser?->role === 'admin';
-        $displayRole = $isAdmin ? 'Administrator' : 'Author';
-        $initials = collect(explode(' ', $authUser?->name ?? 'User'))
-            ->filter()
-            ->map(fn($word) => strtoupper(substr($word, 0, 1)))
-            ->take(2)
-            ->implode('');
+        $isAuthor = $authUser?->role === 'author';
     @endphp
 
     <div class="h-screen flex flex-col">
@@ -111,12 +106,12 @@
                         <button id="profileToggle" class="flex items-center space-x-3 focus:outline-none group">
                             <div class="hidden sm:block text-right">
                                 <p class="text-sm font-semibold text-slate-900">{{ $authUser?->name }}</p>
-                                <p class="text-xs text-slate-500">{{ $displayRole }}</p>
+                                <p class="text-xs text-slate-500">{{ $authUser?->role }}</p>
                             </div>
-                            <div
+                            {{-- <div
                                 class="w-10 h-10 bg-linear-to-br from-slate-700 to-slate-900 rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md transition-all ring-2 ring-slate-200">
                                 <span class="text-sm font-bold text-white">{{ $initials ?: 'US' }}</span>
-                            </div>
+                            </div> --}}
                         </button>
                         <!-- Dropdown Profile -->
                         <div id="profileDropdown"
@@ -192,7 +187,7 @@
                             </svg>
                             <span>Kelola User</span>
                         </a>
-                    @else
+                    @elseif ($isAuthor)
                         <a href="{{ route('author.beranda') }}"
                             class="flex items-center space-x-3 px-3 py-3 rounded-xl {{ request()->is('author/beranda') || request()->is('author/beranda/*') ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }} font-medium transition-all group">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
